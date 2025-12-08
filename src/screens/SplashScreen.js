@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 
 const { width, height } = Dimensions.get('window');
@@ -28,128 +29,196 @@ const SplashScreen = ({ onFinish }) => {
   // Animación de progreso
   const progressAnim = useRef(new Animated.Value(0)).current;
 
+  // Referencia al sonido
+  const sound = useRef(null);
+
   useEffect(() => {
+    // Función para cargar y reproducir el sonido
+    async function playSound() {
+      try {
+        console.log('🎵 Intentando cargar el sonido...');
+        
+        // Configurar el modo de audio
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: false,
+          shouldDuckAndroid: true,
+        });
+
+        // Reproducir audio completo (sin cortar)
+        const { sound: loadedSound } = await Audio.Sound.createAsync(
+          require('../../assets/sounds/startup.mp3'),
+          { 
+            shouldPlay: true, 
+            volume: 0.6,
+            isLooping: false
+          }
+        );
+
+        sound.current = loadedSound;
+        console.log('✅ Sonido cargado y reproduciendo');
+
+        // Listener para cuando termine el sonido
+        loadedSound.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            console.log('🎵 Sonido terminado');
+          }
+          if (status.error) {
+            console.log('❌ Error en playback:', status.error);
+          }
+        });
+      } catch (error) {
+        console.log('❌ Error al cargar el sonido:', error);
+        console.log('Error details:', error.message);
+      }
+    }
+
+    // Reproducir sonido
+    playSound();
+
     // Vibración inicial suave
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    // Animación de brillo continuo
+    // Animación de brillo continuo (más lento y suave)
     Animated.loop(
       Animated.sequence([
         Animated.timing(glowAnim, {
           toValue: 1,
-          duration: 1500,
+          duration: 2000, // Más lento
           useNativeDriver: true,
         }),
         Animated.timing(glowAnim, {
           toValue: 0,
-          duration: 1500,
+          duration: 2000,
           useNativeDriver: true,
         }),
       ])
     ).start();
 
-    // Secuencia principal de animaciones
+    // Secuencia principal de animaciones - EXTENDIDA A 8 SEGUNDOS
     Animated.sequence([
-      // 1. Círculos de fondo expandiéndose
-      Animated.stagger(200, [
+      // 1. Círculos de fondo expandiéndose lentamente (0-1.2s)
+      Animated.stagger(400, [ // Mucho más lento
         Animated.spring(circle1Scale, {
           toValue: 1,
-          friction: 4,
-          tension: 40,
+          friction: 6, // Más fricción = más suave
+          tension: 30, // Menos tensión = más lento
           useNativeDriver: true,
         }),
         Animated.spring(circle2Scale, {
           toValue: 1,
-          friction: 4,
-          tension: 40,
+          friction: 6,
+          tension: 30,
           useNativeDriver: true,
         }),
         Animated.spring(circle3Scale, {
           toValue: 1,
-          friction: 4,
-          tension: 40,
+          friction: 6,
+          tension: 30,
           useNativeDriver: true,
         }),
-      ]),
+      ],),
 
-      // 2. Logo principal aparece con rotación
+      // 2. Logo principal aparece con rotación lenta (1.2-3.5s)
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 800,
+          duration: 1200, // Más lento
           useNativeDriver: true,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
-          friction: 6,
-          tension: 40,
+          friction: 8,
+          tension: 30,
           useNativeDriver: true,
         }),
         Animated.timing(logoRotate, {
           toValue: 1,
-          duration: 1000,
+          duration: 2000, // Rotación más lenta y elegante
           useNativeDriver: true,
         }),
         Animated.spring(slideUpAnim, {
           toValue: 0,
-          friction: 8,
-          tension: 40,
+          friction: 10,
+          tension: 30,
           useNativeDriver: true,
         }),
       ]),
 
-      // 3. Pausa
-      Animated.delay(300),
+      // 3. Pausa para apreciar el logo (3.5-4.2s)
+      Animated.delay(700),
 
-      // 4. Iconos aparecen en cascada
-      Animated.stagger(150, [
-        Animated.parallel([
-          Animated.spring(icon1Anim, {
-            toValue: 1,
-            friction: 5,
-            useNativeDriver: true,
-          }),
-        ]),
+      // 4. Iconos aparecen en cascada lenta (4.2-5.4s)
+      Animated.stagger(300, [ // Más espaciado entre iconos
+        Animated.spring(icon1Anim, {
+          toValue: 1,
+          friction: 6,
+          tension: 35,
+          useNativeDriver: true,
+        }),
         Animated.spring(icon2Anim, {
           toValue: 1,
-          friction: 5,
+          friction: 6,
+          tension: 35,
           useNativeDriver: true,
         }),
         Animated.spring(icon3Anim, {
           toValue: 1,
-          friction: 5,
+          friction: 6,
+          tension: 35,
           useNativeDriver: true,
         }),
       ]),
 
-      // 5. Barra de progreso
+      // 5. Pausa intermedia (5.4-5.8s)
+      Animated.delay(400),
+
+      // 6. Barra de progreso lenta y elegante (5.8-7.2s)
       Animated.timing(progressAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 1400, // Progreso lento
         useNativeDriver: true,
       }),
 
-      // 6. Pausa final
+      // 7. Pausa final para completar audio (7.2-7.8s)
       Animated.delay(600),
 
-      // 7. Fade out espectacular
+      // 8. Fade out suave (7.8-8.5s)
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 500,
+          duration: 700, // Fade out más lento
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1.5,
-          duration: 500,
+          duration: 700,
           useNativeDriver: true,
         }),
       ]),
-    ]).start(() => {
+    ]).start(async () => {
+      // Detener y liberar el sonido antes de finalizar
+      if (sound.current) {
+        try {
+          await sound.current.stopAsync();
+          await sound.current.unloadAsync();
+          console.log('🎵 Sonido detenido y liberado');
+        } catch (error) {
+          console.log('Error al detener el sonido:', error);
+        }
+      }
+
       // Vibración de éxito al finalizar
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       onFinish();
     });
+
+    // Cleanup: Limpiar el sonido cuando el componente se desmonte
+    return () => {
+      if (sound.current) {
+        sound.current.unloadAsync().catch(err => console.log('Error en cleanup:', err));
+      }
+    };
   }, []);
 
   const rotate = logoRotate.interpolate({
@@ -160,11 +229,6 @@ const SplashScreen = ({ onFinish }) => {
   const glowOpacity = glowAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0.3, 0.8],
-  });
-
-  const progressWidth = progressAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, width * 0.7],
   });
 
   return (
@@ -332,10 +396,11 @@ const SplashScreen = ({ onFinish }) => {
           <View className="w-72 h-2 bg-white/20 rounded-full overflow-hidden">
             <Animated.View
               style={{
-                width: progressWidth,
+                width: '100%',
                 height: '100%',
                 backgroundColor: '#FFFFFF',
                 borderRadius: 10,
+                transform: [{ scaleX: progressAnim }],
               }}
             />
           </View>

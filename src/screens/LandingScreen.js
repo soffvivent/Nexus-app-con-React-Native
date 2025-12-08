@@ -187,7 +187,7 @@ const LandingScreen = ({ navigation }) => {
               ✨ Desarrollado con React Native + Expo
             </Text>
             <Text className="text-gray-400 text-center font-montserrat text-xs">
-              Proyecto Nexus © 2024 - UNIR
+              Proyecto Nexus © 2025 - UNIR
             </Text>
           </View>
         </View>
