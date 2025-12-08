@@ -13,6 +13,8 @@ import {
 
 import AppNavigator from './src/navigation/AppNavigator';
 import SplashScreen from './src/screens/SplashScreen';
+import { CartProvider } from './src/context/CartContext';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -46,5 +48,10 @@ export default function App() {
   }
 
   // Mostrar la app principal
-  return <AppNavigator />;
+  return (
+    <CartProvider>
+      <AppNavigator />
+      <Toast />
+    </CartProvider>
+  );
 }

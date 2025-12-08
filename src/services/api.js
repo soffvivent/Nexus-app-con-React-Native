@@ -1,6 +1,6 @@
 // URL de tu API simulada (ajustar según tu actividad 1)
 // Cambiar por la URL de tu JSON Server o API simulada
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://mock.apidog.com/m1/1069422-1057565-default';
 
 // Si usas json-server en tu computadora, asegúrate de usar la IP de tu máquina
 // En Android el localhost es 10.0.2.2

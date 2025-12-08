@@ -6,12 +6,25 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Importar todas las pantallas
 import LandingScreen from '../screens/LandingScreen';
-import BooksScreen from '../screens/BooksScreen';
+import CatalogScreen from '../screens/CatalogScreen';
+import BookScreen from '../screens/BookScreen';
+import CartScreen from '../screens/CartScreen';
 import CoWorkingScreen from '../screens/CoWorkingScreen';
 import CafeScreen from '../screens/CafeScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// Stack de Libros
+function BooksStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Catalog" component={CatalogScreen} />
+      <Stack.Screen name="BookDetails" component={BookScreen} />
+      <Stack.Screen name="Cart" component={CartScreen} />
+    </Stack.Navigator>
+  );
+}
 
 // Navegación por Tabs (Bottom Tabs)
 function TabNavigator() {
@@ -53,7 +66,7 @@ function TabNavigator() {
       {/* Pestaña 2: Libros */}
       <Tab.Screen 
         name="Books" 
-        component={BooksScreen}
+        component={BooksStack}
         options={{ tabBarLabel: 'Libros' }}
       />
       
@@ -78,24 +91,7 @@ function TabNavigator() {
 function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#1E40AF',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        <Stack.Screen 
-          name="Main" 
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        {/* Aquí se pueden agregar más pantallas Stack en el futuro */}
-      </Stack.Navigator>
+      <TabNavigator />
     </NavigationContainer>
   );
 }
