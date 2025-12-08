@@ -1,0 +1,78 @@
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Builds nativos
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.hprof
+
+# Metro
+.metro-health-check*
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+logs/
+
+# Sistema Operativo
+.DS_Store
+*.pem
+Thumbs.db
+
+# Variables de entorno
+.env
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Cache
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Android
+*.apk
+*.aab
+android/.gradle/
+android/app/build/
+android/build/
+
+# iOS
+*.ipa
+ios/Pods/
+ios/build/
+*.xcworkspace
+!default.xcworkspace
+
+# Archivos grandes o innecesarios
+*.zip
+*.tar.gz
+video-memoria.mp4
