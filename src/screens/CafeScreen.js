@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../context/CartContext';
 import HapticButton from '../components/HapticButton';
 import { cafeMenuData } from '../constants/cafeMenu';
 
-const CafeScreen = () => {
+const CafeScreen = ({ navigation }) => {
   const { addItem, count } = useCart();
   const [menu, setMenu] = useState([]);
 
@@ -35,20 +37,35 @@ const CafeScreen = () => {
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1">
         {/* Header */}
-        <View className="bg-amber-600 pt-8 pb-12 px-6 rounded-b-3xl">
-          <Text className="text-white text-4xl font-poppins-bold mb-2">
-            ☕ Cafetería Nexus
-          </Text>
-          <Text className="text-amber-100 text-base font-montserrat">
+        <View className="bg-amber-600 pt-6 pb-8 px-6 rounded-b-3xl mb-4">
+          <View className="flex-row items-center justify-between mb-2">
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                navigation.goBack();
+              }}
+            >
+              <Text className="text-amber-100 text-lg font-montserrat">← Volver</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                navigation.navigate('Cart');
+              }}
+              className="bg-white/10 rounded-full p-2 relative"
+            >
+              <Ionicons name="cart" size={24} color="#fff" />
+              {count > 0 && (
+                <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                  <Text className="text-white text-xs font-poppins-bold">{count}</Text>
+                </View>
+              )}
+            </Pressable>
+          </View>
+          <Text className="text-white text-3xl font-poppins-bold">☕ Cafetería Nexus</Text>
+          <Text className="text-amber-100 text-sm font-montserrat mt-1">
             Disfruta de nuestro menú variado
           </Text>
-          {count > 0 && (
-            <View className="bg-white bg-opacity-20 rounded-full px-3 py-1 mt-3 self-start">
-              <Text className="text-white text-sm font-montserrat">
-                🛒 {count} item{count !== 1 ? 's' : ''} en carrito
-              </Text>
-            </View>
-          )}
         </View>
 
         {/* Banner de ofertas */}

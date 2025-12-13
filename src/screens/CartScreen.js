@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Pressable, Image } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +10,11 @@ const CartScreen = ({ navigation }) => {
 
   const handleRemove = (id) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    removeItem(id);
+    // Encontrar el item para obtener su tipo
+    const item = items.find(i => i.id === id);
+    if (item) {
+      removeItem(id, item.type);
+    }
   };
 
   const handleClear = () => {
@@ -120,7 +124,30 @@ const CartScreen = ({ navigation }) => {
                 </Text>
               </Pressable>
 
-              <Pressable className="bg-blue-700 rounded-2xl py-4 px-6 shadow-lg shadow-blue-700/30 active:bg-blue-800">
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  // Mostrar información de pago
+                  Alert.alert(
+                    'Información de Pago',
+                    `Total a pagar: $${total.toFixed(2)}\n\nMétodos de pago disponibles:\n• Tarjeta de crédito/débito\n• Efectivo en tienda\n• Transferencia bancaria\n\nPara completar tu compra, acércate a la caja con este resumen.`,
+                    [
+                      { text: 'Cancelar', style: 'cancel' },
+                      {
+                        text: 'Confirmar Pedido',
+                        onPress: () => {
+                          Alert.alert(
+                            'Pedido Confirmado',
+                            'Tu pedido ha sido registrado. Por favor, acércate a la caja para completar el pago.',
+                            [{ text: 'OK', onPress: () => clear() }]
+                          );
+                        }
+                      }
+                    ]
+                  );
+                }}
+                className="bg-blue-700 rounded-2xl py-4 px-6 shadow-lg shadow-blue-700/30 active:bg-blue-800"
+              >
                 <Text className="text-white text-lg font-poppins-bold text-center">
                   Proceder al pago
                 </Text>
